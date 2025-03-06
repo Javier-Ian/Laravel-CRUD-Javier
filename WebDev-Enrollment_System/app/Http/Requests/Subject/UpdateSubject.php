@@ -15,7 +15,7 @@ class UpdateSubjectRequest extends FormRequest
     {
         return [
             'subject_code' => 'required|unique:subjects,subject_code,' . $this->subject->id,
-            'name' => 'required',
+            'name' => 'required|unique:subjects,name,' . $this->subject->id,
             'description' => 'nullable',
             'units' => 'required|integer',
             'schedule' => 'nullable'
@@ -28,6 +28,7 @@ class UpdateSubjectRequest extends FormRequest
             'subject_code.required' => 'Subject code is required',
             'subject_code.unique' => 'This subject code already exists',
             'name.required' => 'Subject name is required',
+            'name.unique' => 'This subject name already exists',
             'units.required' => 'Number of units is required',
             'units.integer' => 'Units must be a whole number'
         ];

@@ -49,10 +49,8 @@ class SubjectController extends Controller
         try {
             $validated = $request->validate([
                 'subject_code' => 'required|unique:subjects,subject_code,' . $subject->id,
-                'name' => 'required',
-                'description' => 'nullable',
-                'units' => 'required|integer',
-                'schedule' => 'nullable'
+                'name' => 'required|unique:subjects,name,' . $subject->id,
+                'units' => 'required|integer'
             ]);
 
             $subject->update($validated);

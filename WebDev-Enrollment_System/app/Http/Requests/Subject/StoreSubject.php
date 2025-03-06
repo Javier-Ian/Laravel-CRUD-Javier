@@ -15,7 +15,7 @@ class StoreSubject extends FormRequest
     {
         return [
             'subject_code' => 'required|unique:subjects,subject_code',
-            'name' => 'required',
+            'name' => 'required|unique:subjects,name',
             'description' => 'nullable',
             'units' => 'required|integer|min:1',
             'schedule' => 'nullable'
@@ -28,6 +28,7 @@ class StoreSubject extends FormRequest
             'subject_code.required' => 'Subject code is required',
             'subject_code.unique' => 'Subject code already exists',
             'name.required' => 'Subject name is required',
+            'name.unique' => 'This subject name already exists',
             'units.required' => 'Units is required',
             'units.integer' => 'Units must be a number',
             'units.min' => 'Units must be at least 1'

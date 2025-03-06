@@ -14,9 +14,7 @@ class Subjects extends Model
     protected $fillable = [
         'subject_code',
         'name',
-        'description',
-        'units',
-        'schedule'
+        'units'
     ];
 
     // Relationship with students (many-to-many)

@@ -16,17 +16,18 @@
                                 <i class="fas fa-plus"></i>
                             </button>
                         </div>
+                        <div class="search-box">
+                            <input type="text" id="searchInput" class="form-control" placeholder="Search subjects...">
+                        </div>
                     </div>
                     <div class="card-body px-0 pt-0 pb-2">
                         <div class="table-responsive p-0">
-                            <table class="table align-items-center mb-0">
+                            <table class="table align-items-center mb-0" id="subjectsTable">
                                 <thead>
                                     <tr>
                                         <th>Subject Code</th>
-                                        <th>Name</th>
-                                        <th>Description</th>
+                                        <th>Subject Name</th>
                                         <th>Units</th>
-                                        <th>Schedule</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -35,13 +36,10 @@
                                     <tr>
                                         <td>{{ $subject->subject_code }}</td>
                                         <td>{{ $subject->name }}</td>
-                                        <td>{{ $subject->description }}</td>
                                         <td>{{ $subject->units }}</td>
-                                        <td>{{ $subject->schedule }}</td>
                                         <td>
                                             <button class="btn bg-gradient-warning btn-sm" 
                                                     onclick="editSubject('{{ $subject->id }}', '{{ $subject->subject_code }}', '{{ $subject->name }}', '{{ $subject->description }}', '{{ $subject->units }}', '{{ $subject->schedule }}')">
-                                                <!-- <i class="fas fa-edit"></i> Edit -->
                                                  Edit
                                             </button>
                                             <form id="delete-form-{{ $subject->id }}" action="{{ route('subjects.destroy', $subject) }}" method="POST" class="d-inline">
@@ -49,7 +47,6 @@
                                                 @method('DELETE')
                                                 <button type="button" class="btn bg-gradient-danger btn-sm" 
                                                         onclick="confirmDelete('delete-form-{{ $subject->id }}')">
-                                                    <!-- <i class="fas fa-trash"></i> Delete -->
                                                      Delete
                                                 </button>
                                             </form>
@@ -83,19 +80,18 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Name</label>
-                        <input type="text" class="form-control" name="name" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Description</label>
-                        <textarea class="form-control" name="description" rows="3"></textarea>
+                        <select class="form-select" name="name" required>
+                            <option value="" selected disabled>Select a subject</option>
+                            <option value="Computer Programming">Computer Programming</option>
+                            <option value="Web Development">Web Development</option>
+                            <option value="Android Studio">Android Studio</option>
+                            <option value="Networking">Networking</option>
+                            <option value="Capstone">Capstone</option>
+                        </select>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Units</label>
                         <input type="number" class="form-control" name="units" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Schedule</label>
-                        <input type="text" class="form-control" name="schedule">
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -125,19 +121,17 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Name</label>
-                        <input type="text" class="form-control" name="name" id="edit_name" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Description</label>
-                        <textarea class="form-control" name="description" id="edit_description" rows="3"></textarea>
+                        <select class="form-select" name="name" id="edit_name" required>
+                            <option value="Computer Programming">Computer Programming</option>
+                            <option value="Web Development">Web Development</option>
+                            <option value="Android Studio">Android Studio</option>
+                            <option value="Networking">Networking</option>
+                            <option value="Capstone">Capstone</option>
+                        </select>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Units</label>
                         <input type="number" class="form-control" name="units" id="edit_units" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Schedule</label>
-                        <input type="text" class="form-control" name="schedule" id="edit_schedule">
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -156,10 +150,17 @@ function editSubject(id, subject_code, name, description, units, schedule) {
     form.action = `/subjects/${id}`;
     
     document.getElementById('edit_subject_code').value = subject_code;
-    document.getElementById('edit_name').value = name;
-    document.getElementById('edit_description').value = description;
+    
+    // For select element, we need to find the option and set it as selected
+    const nameSelect = document.getElementById('edit_name');
+    for (let i = 0; i < nameSelect.options.length; i++) {
+        if (nameSelect.options[i].value === name) {
+            nameSelect.selectedIndex = i;
+            break;
+        }
+    }
+    
     document.getElementById('edit_units').value = units;
-    document.getElementById('edit_schedule').value = schedule;
     
     const editModal = new bootstrap.Modal(document.getElementById('editSubjectModal'));
     editModal.show();
@@ -246,7 +247,7 @@ document.getElementById('addSubjectForm').addEventListener('submit', function(e)
         if (data.success) {
             Swal.fire({
                 icon: 'success',
-                title: 'Success!',
+                title: 'Success',
                 text: data.message,
                 showConfirmButton: false,
                 timer: 1500
@@ -254,21 +255,18 @@ document.getElementById('addSubjectForm').addEventListener('submit', function(e)
                 location.reload();
             });
         } else {
-            throw new Error(data.message || 'Error adding subject');
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: data.message || 'Error adding subject'
+            });
         }
     })
     .catch(error => {
-        let errorMessage = 'Error adding subject';
-        if (error.errors) {
-            errorMessage = Object.values(error.errors).flat().join('<br>');
-        } else if (error.message) {
-            errorMessage = error.message;
-        }
         Swal.fire({
             icon: 'error',
-            title: 'Validation Error',
-            html: errorMessage,
-            confirmButtonColor: '#ea580c'
+            title: 'Error',
+            text: error.message || 'Error adding subject'
         });
     })
     .finally(() => {
@@ -283,18 +281,25 @@ document.getElementById('editSubjectForm').addEventListener('submit', function(e
     submitButton.disabled = true;
     
     fetch(this.action, {
-        method: 'POST',
+        method: 'PUT',
         body: new FormData(this),
         headers: {
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+            'Accept': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
         }
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            return response.json().then(err => Promise.reject(err));
+        }
+        return response.json();
+    })
     .then(data => {
         if (data.success) {
             Swal.fire({
                 icon: 'success',
-                title: 'Success!',
+                title: 'Success',
                 text: data.message,
                 showConfirmButton: false,
                 timer: 1500
@@ -318,6 +323,29 @@ document.getElementById('editSubjectForm').addEventListener('submit', function(e
     })
     .finally(() => {
         submitButton.disabled = false;
+    });
+});
+
+// Search functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchInput');
+    const table = document.getElementById('subjectsTable');
+    const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+    
+    searchInput.addEventListener('keyup', function() {
+        const searchTerm = searchInput.value.toLowerCase();
+        
+        for (let i = 0; i < rows.length; i++) {
+            const subjectCode = rows[i].getElementsByTagName('td')[0].textContent.toLowerCase();
+            const subjectName = rows[i].getElementsByTagName('td')[1].textContent.toLowerCase();
+            const units = rows[i].getElementsByTagName('td')[2].textContent.toLowerCase();
+            
+            if (subjectCode.includes(searchTerm) || subjectName.includes(searchTerm) || units.includes(searchTerm)) {
+                rows[i].style.display = '';
+            } else {
+                rows[i].style.display = 'none';
+            }
+        }
     });
 });
 </script>
@@ -381,6 +409,23 @@ document.getElementById('editSubjectForm').addEventListener('submit', function(e
 
     .card-header .btn.bg-gradient-primary:hover i {
         color: var(--light);
+    }
+    
+    /* Search box styling */
+    .search-box {
+        width: 300px;
+    }
+    
+    .search-box input {
+        border-radius: 20px;
+        padding-left: 15px;
+        border: 1px solid #ddd;
+        transition: all 0.3s ease;
+    }
+    
+    .search-box input:focus {
+        box-shadow: 0 0 5px rgba(234, 88, 12, 0.3);
+        border-color: var(--primary-orange);
     }
 </style>
 @endpush
