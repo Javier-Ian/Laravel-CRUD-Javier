@@ -25,14 +25,13 @@ class GradeController extends Controller
         try {
             $validated = $request->validated();
             
-            // Get subject information before potential deletion
+            // Get subject information
             $subject = Subjects::findOrFail($validated['subject_id']);
             
-            // Calculate average
-            $average = ($validated['midterm'] + $validated['finals']) / 2;
-            $average = round($average, 2);
+            // No need to calculate average since we're using predefined grades
+            $average = $validated['finals']; // Using finals as the final grade
             
-            // Determine remarks
+            // Determine remarks based on the grade
             $remarks = $average <= 3.00 ? 'Passed' : 'Failed';
 
             // Store grade with subject information

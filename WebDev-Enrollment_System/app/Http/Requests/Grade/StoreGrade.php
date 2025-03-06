@@ -16,8 +16,8 @@ class StoreGrade extends FormRequest
         return [
             'student_id' => 'required|exists:students,id',
             'subject_id' => 'required|exists:subjects,id',
-            'midterm' => 'required|numeric|min:1|max:5',
-            'finals' => 'required|numeric|min:1|max:5'
+            'midterm' => 'required|in:1.00,1.25,1.50,1.75,2.00,2.25,2.50,2.75,3.00,4.00,5.00',
+            'finals' => 'required|in:1.00,1.25,1.50,1.75,2.00,2.25,2.50,2.75,3.00,4.00,5.00'
         ];
     }
 
@@ -29,13 +29,9 @@ class StoreGrade extends FormRequest
             'subject_id.required' => 'Subject ID is required',
             'subject_id.exists' => 'Selected subject does not exist',
             'midterm.required' => 'Midterm grade is required',
-            'midterm.numeric' => 'Midterm grade must be a number',
-            'midterm.min' => 'Minimum grade is 1.0',
-            'midterm.max' => 'Maximum grade is 5.0',
+            'midterm.in' => 'Invalid midterm grade value',
             'finals.required' => 'Final grade is required',
-            'finals.numeric' => 'Final grade must be a number',
-            'finals.min' => 'Minimum grade is 1.0',
-            'finals.max' => 'Maximum grade is 5.0'
+            'finals.in' => 'Invalid final grade value',
         ];
     }
 }

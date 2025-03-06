@@ -92,14 +92,38 @@
                     
                     <div class="mb-3">
                         <label for="midterm" class="form-label">Midterm Grade</label>
-                        <input type="number" class="form-control" id="midterm" name="midterm" 
-                               step="0.01" min="1" max="5" required>
+                        <select class="form-select" id="midterm" name="midterm" required>
+                            <option value="" selected disabled>Select grade</option>
+                            <option value="1.00">1.00</option>
+                            <option value="1.25">1.25</option>
+                            <option value="1.50">1.50</option>
+                            <option value="1.75">1.75</option>
+                            <option value="2.00">2.00</option>
+                            <option value="2.25">2.25</option>
+                            <option value="2.50">2.50</option>
+                            <option value="2.75">2.75</option>
+                            <option value="3.00">3.00</option>
+                            <option value="4.00">4.00</option>
+                            <option value="5.00">5.00</option>
+                        </select>
                     </div>
                     
                     <div class="mb-3">
                         <label for="finals" class="form-label">Finals Grade</label>
-                        <input type="number" class="form-control" id="finals" name="finals" 
-                               step="0.01" min="1" max="5" required>
+                        <select class="form-select" id="finals" name="finals" required>
+                            <option value="" selected disabled>Select grade</option>
+                            <option value="1.00">1.00</option>
+                            <option value="1.25">1.25</option>
+                            <option value="1.50">1.50</option>
+                            <option value="1.75">1.75</option>
+                            <option value="2.00">2.00</option>
+                            <option value="2.25">2.25</option>
+                            <option value="2.50">2.50</option>
+                            <option value="2.75">2.75</option>
+                            <option value="3.00">3.00</option>
+                            <option value="4.00">4.00</option>
+                            <option value="5.00">5.00</option>
+                        </select>
                     </div>
                 </form>
             </div>
@@ -107,6 +131,67 @@
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 <button type="button" class="btn bg-gradient-warning" onclick="saveGrades()">Save Grades</button>
             </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Grade Modal -->
+<div class="modal fade" id="addGradeModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Grade</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="addGradeForm" method="POST">
+                @csrf
+                <input type="hidden" name="student_id" id="grade_student_id">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Subject</label>
+                        <select class="form-select" name="subject_id" id="grade_subject_id" required>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Midterm Grade</label>
+                        <select class="form-select" name="midterm" required>
+                            <option value="" selected disabled>Select grade</option>
+                            <option value="1.00">1.00</option>
+                            <option value="1.25">1.25</option>
+                            <option value="1.50">1.50</option>
+                            <option value="1.75">1.75</option>
+                            <option value="2.00">2.00</option>
+                            <option value="2.25">2.25</option>
+                            <option value="2.50">2.50</option>
+                            <option value="2.75">2.75</option>
+                            <option value="3.00">3.00</option>
+                            <option value="4.00">4.00</option>
+                            <option value="5.00">5.00</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Final Grade</label>
+                        <select class="form-select" name="finals" required>
+                            <option value="" selected disabled>Select grade</option>
+                            <option value="1.00">1.00</option>
+                            <option value="1.25">1.25</option>
+                            <option value="1.50">1.50</option>
+                            <option value="1.75">1.75</option>
+                            <option value="2.00">2.00</option>
+                            <option value="2.25">2.25</option>
+                            <option value="2.50">2.50</option>
+                            <option value="2.75">2.75</option>
+                            <option value="3.00">3.00</option>
+                            <option value="4.00">4.00</option>
+                            <option value="5.00">5.00</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn bg-light" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn bg-gradient-primary">Save Grade</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
