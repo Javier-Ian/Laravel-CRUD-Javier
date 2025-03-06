@@ -204,6 +204,9 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
+// Add this at the start of your scripts
+const validGrades = ['1.00', '1.25', '1.50', '1.75', '2.00', '2.25', '2.50', '2.75', '3.00', '4.00', '5.00'];
+
 console.log('Document ready, initializing DataTable and modal events');
 $(document).ready(function() {
     console.log('Document ready, initializing DataTable and modal events');
@@ -303,6 +306,19 @@ function saveGrades() {
     const form = document.getElementById('gradesForm');
     const formData = new FormData(form);
     
+    // Validate grades before sending
+    const midterm = formData.get('midterm');
+    const finals = formData.get('finals');
+    
+    if (!validGrades.includes(midterm) || !validGrades.includes(finals)) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Invalid Grade',
+            text: 'Please select a valid grade from the dropdown'
+        });
+        return;
+    }
+
     fetch('/grades/store', {
         method: 'POST',
         headers: {
@@ -356,6 +372,35 @@ function saveGrades() {
         });
     });
 }
+
+// Add event listeners to prevent direct input
+document.addEventListener('DOMContentLoaded', function() {
+    const gradeSelects = document.querySelectorAll('select[name="midterm"], select[name="finals"]');
+    
+    gradeSelects.forEach(select => {
+        // Prevent keyboard input
+        select.addEventListener('keydown', function(e) {
+            e.preventDefault();
+        });
+        
+        // Prevent paste
+        select.addEventListener('paste', function(e) {
+            e.preventDefault();
+        });
+        
+        // Validate on change
+        select.addEventListener('change', function() {
+            if (!validGrades.includes(this.value)) {
+                this.value = '';
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Invalid Grade',
+                    text: 'Please select a valid grade from the dropdown'
+                });
+            }
+        });
+    });
+});
 </script>
 @endpush
 

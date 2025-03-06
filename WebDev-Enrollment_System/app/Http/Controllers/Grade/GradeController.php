@@ -25,13 +25,20 @@ class GradeController extends Controller
         try {
             $validated = $request->validated();
             
+            // Additional validation layer
+            $validGrades = ['1.00', '1.25', '1.50', '1.75', '2.00', '2.25', '2.50', '2.75', '3.00', '4.00', '5.00'];
+            
+            if (!in_array($validated['midterm'], $validGrades) || !in_array($validated['finals'], $validGrades)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Invalid grade value detected'
+                ], 422);
+            }
+            
             // Get subject information
             $subject = Subjects::findOrFail($validated['subject_id']);
             
-            // No need to calculate average since we're using predefined grades
             $average = $validated['finals']; // Using finals as the final grade
-            
-            // Determine remarks based on the grade
             $remarks = $average <= 3.00 ? 'Passed' : 'Failed';
 
             // Store grade with subject information
