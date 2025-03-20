@@ -13,7 +13,7 @@ class SubjectController extends Controller
 {
     public function index()
     {
-        $subjects = Subjects::all();
+        $subjects = Subjects::with('students')->get();
         return view('Subjects.Subjects', compact('subjects'));
     }
 

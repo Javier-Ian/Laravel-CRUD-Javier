@@ -14,7 +14,7 @@
                             <h6 class="mb-0">Subject Lists</h6>
                             <button type="button" class="text-white bg-gradient-primary btn-sm ms-2" data-bs-toggle="modal" data-bs-target="#addSubjectModal">
                                 <i class="fas fa-plus"></i>
-                            </button>
+                            </button>x
                         </div>
                         <div class="search-box">
                             <input type="text" id="searchInput" class="form-control" placeholder="Search subjects...">
@@ -46,7 +46,9 @@
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="button" class="btn bg-gradient-danger btn-sm" 
-                                                        onclick="confirmDelete('delete-form-{{ $subject->id }}')">
+                                                        onclick="confirmDelete('delete-form-{{ $subject->id }}')"
+                                                        {{ $subject->students->count() > 0 ? 'disabled' : '' }}
+                                                        title="{{ $subject->students->count() > 0 ? 'Cannot delete: Students are enrolled in this subject' : 'Delete subject' }}">
                                                      Delete
                                                 </button>
                                             </form>
@@ -80,14 +82,7 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Name</label>
-                        <select class="form-select" name="name" required>
-                            <option value="" selected disabled>Select a subject</option>
-                            <option value="Computer Programming">Computer Programming</option>
-                            <option value="Web Development">Web Development</option>
-                            <option value="Android Studio">Android Studio</option>
-                            <option value="Networking">Networking</option>
-                            <option value="Capstone">Capstone</option>
-                        </select>
+                        <input type="text" class="form-control" name="name" required>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Units</label>
@@ -121,13 +116,7 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Name</label>
-                        <select class="form-select" name="name" id="edit_name" required>
-                            <option value="Computer Programming">Computer Programming</option>
-                            <option value="Web Development">Web Development</option>
-                            <option value="Android Studio">Android Studio</option>
-                            <option value="Networking">Networking</option>
-                            <option value="Capstone">Capstone</option>
-                        </select>
+                        <input type="text" class="form-control" name="name" id="edit_name" required>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Units</label>
@@ -145,21 +134,20 @@
 
 @push('scripts')
 <script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize tooltips
+    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[title]'));
+    tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+});
+
 function editSubject(id, subject_code, name, description, units, schedule) {
     const form = document.getElementById('editSubjectForm');
     form.action = `/subjects/${id}`;
     
     document.getElementById('edit_subject_code').value = subject_code;
-    
-    // For select element, we need to find the option and set it as selected
-    const nameSelect = document.getElementById('edit_name');
-    for (let i = 0; i < nameSelect.options.length; i++) {
-        if (nameSelect.options[i].value === name) {
-            nameSelect.selectedIndex = i;
-            break;
-        }
-    }
-    
+    document.getElementById('edit_name').value = name;
     document.getElementById('edit_units').value = units;
     
     const editModal = new bootstrap.Modal(document.getElementById('editSubjectModal'));
