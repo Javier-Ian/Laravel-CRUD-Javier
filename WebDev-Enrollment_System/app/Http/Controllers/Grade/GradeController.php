@@ -38,7 +38,15 @@ class GradeController extends Controller
             // Get subject information
             $subject = Subjects::findOrFail($validated['subject_id']);
             
-            $average = $validated['finals']; // Using finals as the final grade
+            // Calculate the weighted average (midterm 40% + finals 60%)
+            $midtermWeight = floatval($validated['midterm']) * 0.4;
+            $finalsWeight = floatval($validated['finals']) * 0.6;
+            $rawAverage = $midtermWeight + $finalsWeight;
+            
+            // Round to nearest valid grade
+            $average = $this->findNearestGrade($rawAverage);
+            
+            // Determine remarks based on the calculated average
             $remarks = $average <= 3.00 ? 'Passed' : 'Failed';
 
             // Store grade with subject information
@@ -67,6 +75,25 @@ class GradeController extends Controller
                 'message' => 'Error saving grades: ' . $e->getMessage()
             ], 422);
         }
+    }
+
+    private function findNearestGrade($average)
+    {
+        $validGrades = [1.00, 1.25, 1.50, 1.75, 2.00, 2.25, 2.50, 2.75, 3.00, 4.00, 5.00];
+        
+        // Find the closest valid grade
+        $closest = null;
+        $minDiff = PHP_FLOAT_MAX;
+        
+        foreach ($validGrades as $grade) {
+            $diff = abs($average - $grade);
+            if ($diff < $minDiff) {
+                $minDiff = $diff;
+                $closest = $grade;
+            }
+        }
+        
+        return number_format($closest, 2);
     }
 
     private function convertToGradePoint($percentage)

@@ -35,14 +35,17 @@
                                         <td>
                                             @foreach($student->subjects as $subject)
                                                 <span class="badge bg-primary">
-                                                    {{ $subject->subject_code }} - {{ $subject->name }}
+                                                    {{ $subject->subject_code }} - {{ $subject->name }} (Enrolled)
                                                 </span>
                                             @endforeach
                                             
-                                            @foreach($student->grades->whereNull('subject_id') as $grade)
-                                                <span class="badge bg-secondary">
-                                                    {{ $grade->subject_code }} - {{ $grade->subject_name }} (Deleted)
-                                                </span>
+                                            @foreach($student->grades as $grade)
+                                                @if(!$student->subjects->contains($grade->subject_id))
+                                                    <span class="badge bg-info">
+                                                        {{ $grade->subject->subject_code }} - {{ $grade->subject->name }} 
+                                                        (Grade: {{ $grade->grade }})
+                                                    </span>
+                                                @endif
                                             @endforeach
                                         </td>
                                         <td>

@@ -12,7 +12,7 @@ class EnrollmentController extends Controller
     public function index()
     {
         return view('enrollment.AvailableStudents', [
-            'students' => Students::whereDoesntHave('subjects')->whereDoesntHave('grades')->get(),
+            'students' => Students::whereDoesntHave('subjects')->get(),
             'subjects' => Subjects::all(),
         ]);
     }
@@ -20,11 +20,11 @@ class EnrollmentController extends Controller
     public function enrolled()
     {
         return view('enrollment.enrolledStudents', [
-            'enrolledStudents' => Students::where(function($query) {
-                $query->has('subjects')->orHas('grades');
-            })->with(['subjects', 'grades' => function($query) {
-                $query->whereNull('subject_id');
-            }])->get(),
+            'enrolledStudents' => Students::whereHas('subjects')
+                ->with([
+                    'subjects',
+                    'grades.subject',
+                ])->get(),
             'subjects' => Subjects::all(),
         ]);
     }
@@ -94,10 +94,7 @@ class EnrollmentController extends Controller
         try {
             $student = Students::findOrFail($studentId);
             
-            // Delete all grades for the student
-            $student->grades()->delete();
-            
-            // Detach all subjects
+            // Only detach subjects without affecting grades
             $student->subjects()->detach();
 
             return response()->json([
