@@ -106,6 +106,7 @@
                             <option value="4.00">4.00</option>
                             <option value="5.00">5.00</option>
                             <option value="INC">INC</option>
+                            <option value="drp">drp</option>
                         </select>
                     </div>
                     
@@ -125,6 +126,7 @@
                             <option value="4.00">4.00</option>
                             <option value="5.00">5.00</option>
                             <option value="INC">INC</option>
+                            <option value="drp">drp</option>
                         </select>
                     </div>
                 </form>

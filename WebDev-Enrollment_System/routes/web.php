@@ -27,13 +27,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
 });
 
 // Prevent direct access to layout files
-Route::get('/layouts/{any}', function () {
+    Route::get('/layouts/{any}', function () {
     return redirect('/dashboardTemp');
 })->where('any', '.*');
 
     Route::resource('subjects', SubjectController::class);
 
-Route::middleware(['auth', 'user.type:student'])->group(function () {
+    Route::middleware(['auth', 'user.type:student'])->group(function () {
     Route::get('/student/dashboard', [StudentDashboardController::class, 'index'])
         ->name('student.dashboard');
     Route::get('/student/studentSubjects', [StudentDashboardController::class, 'subjects'])
@@ -42,7 +42,7 @@ Route::middleware(['auth', 'user.type:student'])->group(function () {
         ->name('student.studentGrades');
 });
 
-Route::middleware(['auth', 'user.type:instructor'])->group(function () {
+    Route::middleware(['auth', 'user.type:instructor'])->group(function () {
     Route::resource('students', StudentController::class);
     Route::resource('subjects', SubjectController::class);
     
@@ -63,20 +63,20 @@ Route::middleware(['auth', 'user.type:instructor'])->group(function () {
     Route::post('/enrollment/updateSubjects', [EnrollmentController::class, 'updateSubjects'])->name('enrollment.updateSubjects');
 });
 
-Route::delete('/grades/delete/{student}/{subject}', [GradeController::class, 'destroy'])->name('grades.destroy');
+    Route::delete('/grades/delete/{student}/{subject}', [GradeController::class, 'destroy'])->name('grades.destroy');
 
-Route::get('/grades/subjects/{student_id}', [GradeController::class, 'getSubjects'])->name('grades.subjects');
+    Route::get('/grades/subjects/{student_id}', [GradeController::class, 'getSubjects'])->name('grades.subjects');
 
 // Add these routes if they don't exist
-Route::get('/forgot-password', function () {
+    Route::get('/forgot-password', function () {
     return view('auth/forgot-password');
 })->middleware('guest')->name('password.request');
 
-Route::put('/password/reset', [PasswordResetController::class, 'update'])
+    Route::put('/password/reset', [PasswordResetController::class, 'update'])
     ->middleware('guest')
     ->name('password.update');
 
-Route::post('/login', [LoginController::class, 'login'])->name('login');
-Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+    Route::post('/login', [LoginController::class, 'login'])->name('login');
+    Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 require __DIR__.'/auth.php';
